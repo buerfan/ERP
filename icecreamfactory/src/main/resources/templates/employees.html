@@ -1,0 +1,202 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+	crossorigin="anonymous"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script 
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+	
+	
+
+</head>
+
+<body>
+
+
+<script>
+/* $(document).ready(function(){
+	$("#saveEmployee").click(function()
+			{alert();
+	});
+}); */
+
+$(document).ready(function(){
+	
+	
+	getAllrecords();
+	
+	$("#getTime").click(function()
+	{
+		$.ajax({
+				url: 'date',
+				success:function(date){
+					$("#printTime").html(date);
+				}
+			
+		});
+	});
+	
+	$("#saveEmployee").click(function(){
+		$.ajax({
+			type:"POST",
+			url:"saveEmployee",
+			data:{
+				employeeName:$("input[name='employeeName']").val(),
+				employeeAddress:$("input[name='employeeAddress']").val(),
+				employeePhone:$("input[name='employeePhone']").val(), 
+				employeeSalary:$("input[name='employeeSalary']").val() ,
+				employementType:$("select[name='employementType']").val() ,
+				lastIncrementDate:$("input[name='lastIncrementDate']").val()
+			},
+			success : function(result) {
+				getAllrecords();
+				$("#formEmployee")[0].reset()
+			},
+			error : function(err) {
+				alert("error is" + JSON.stringify(err))
+			}
+			
+			
+		});
+		
+	});
+});
+
+
+var data = "";
+function getAllrecords() {
+	
+	$
+			.ajax({
+				type : "GET",
+				url : "getAllEmployee",
+				success : function(response) {
+					 data = response
+					 
+					 $('.tr').remove();
+					for (i = 0; i < data.length; i++) {
+						$("#employeeTable")
+								.append(
+										'<tr class="tr"> <td>'
+												+ data[i].employeeId
+												+ '</td> <td>'
+												+ data[i].employeeName
+												+ '</td> <td>'
+												+ data[i].employeeAddress
+												+ '</td> <td>'
+												+ data[i].employeePhone
+												+ '</td> <td>'
+												+ data[i].employeeSalary
+												+ '</td> <td>'
+												+ data[i].employementType
+												+ '</td> <td> '
+												+ data[i].lastIncrementDate
+												+ '</td> </tr>');
+					}
+				},
+				error : function(err) {
+					alert("error is" + err)
+				}
+			});
+}
+
+</script>
+
+<div class="container">
+<form id="formEmployee" name="formEmployee">
+	<div class="row">
+		<div class="col-sm-4">
+				
+					<div class="form-group">
+						<label for="employeename">Employee Name</label> <input
+							type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter Employee Name"> 
+					</div>
+					
+					<div class="form-group">
+						<label for="employeeAddress">Employee Address</label> <input
+							type="text" class="form-control" id="employeeAddress" name="employeeAddress" 
+						 placeholder="Enter Employee Address"> 
+					</div>
+					
+					<div class="form-group">
+						<label for="employeePhone">Employee Phone</label> <input
+							type="text" class="form-control" id="employeePhone" name="employeePhone"
+						 placeholder="Enter Employee Phone"> 
+					</div>
+					
+					<div class="form-group">
+						<label for="employeeSalary">Employee Salary</label> <input
+							type="text" class="form-control" id="employeeSalary" name="employeeSalary"
+						 placeholder="Enter Employee Salary"> 
+					</div>
+					
+					<div class="form-group">
+						<label> Employement Type </label> 
+							<select  name="employementType" >
+								<option >Daily</option>
+								<option >Monthly</option>
+								<option >Weekly</option>
+							</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="lastIncrementDate">Enter Last Increment Date</label> <input
+							type="date" class="form-control" id="lastIncrementDate" name="lastIncrementDate"
+						 placeholder="Enter Last Increment Date"> 
+					</div>
+					
+					<div class="form-group">
+						<button type="button" id="saveEmployee" class="btn btn-success">Save</button>
+						<button type="button" class="btn btn-primary">Reset</button>
+					</div>
+					
+				
+			</div>
+
+			<script
+				src="https://cdn.datatables.net/v/ju/jq-3.6.0/dt-1.13.4/datatables.min.js"></script>
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+				
+				
+				
+
+			<div class="col-sm-8">
+				<h3>Employee Record</h3>
+					
+					 <br>
+					<table id="example" class="table table-hover">
+						<thead>
+							<tr>
+								<th scope="col">ID</th>
+								<th scope="col">Name</th>
+								<th scope="col">Address</th>
+								<th scope="col">Phone</th>
+								<th scope="col">Salary</th>
+								<th scope="col">Employement Type</th>
+								<th scope="col">Last Increment Date</th>
+							</tr>
+						</thead>
+						<tbody id="employeeTable">
+						</tbody>
+					</table>
+				
+			</div>
+	</div>
+	</form>
+</div>
+</body>
+</html>
